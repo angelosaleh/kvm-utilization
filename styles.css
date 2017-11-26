@@ -1,0 +1,29 @@
+.resourcesdiv {
+  display: inline-table;
+  margin: 0.2em;
+  width: 500px;
+  border: 1px solid;
+  border-radius: 1em;
+}
+
+h3 {
+  margin: auto;
+  width: 25%;
+}
+
+table {
+  font-family: arial, sans-serif;
+  margin: auto;
+  padding: 5px;
+  width: 50%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #dddddd;
+}
