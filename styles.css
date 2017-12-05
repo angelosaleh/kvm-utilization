@@ -1,9 +1,13 @@
 .resourcesdiv {
-  display: inline-table;
+  display: inline-grid;
   margin: 0.2em;
   width: 500px;
   border: 1px solid;
   border-radius: 1em;
+}
+
+.resourcesdivall {
+  width: 1000px;
 }
 
 h3 {

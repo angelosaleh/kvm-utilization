@@ -9,38 +9,6 @@
       <h3>DISK USAGE</h3>
       <table>
         <tr>
-          <th>Size</th>
-          <th>Location</th>
-          <th>VM</th>
-        </tr>
-        <tr>
-          <td>60G</td>
-          <td>/data/myvm1.img</td>
-          <td>myvm1</td>
-        </tr>
-        <tr>
-          <td>60G</td>
-          <td>/data/myvm2.img</td>
-          <td>myvm2</td>
-        </tr>
-        <tr>
-          <td>60G</td>
-          <td>/data/myvm3.img</td>
-          <td>myvm3</td>
-        </tr>
-        <tr>
-          <td>80G</td>
-          <td>/data/myvm4.img</td>
-          <td>myvm4</td>
-        </tr>
-        <tr>
-          <th>260G</th>
-          <th>Total usage</th>
-          <th></th>
-        </tr>
-      </table>
-      <table>
-        <tr>
           <th colspan="6">df -- display free disk space</th>
         </tr>
         <tr>
@@ -100,28 +68,6 @@
           <td>28G</td>
         </tr>
       </table>
-      <table>
-        <tr>
-          <th>RAM</th>
-          <th>VM</th>
-        </tr>
-        <tr>
-          <td>25G</td>
-          <td>myvm1</td>
-        </tr>
-        <tr>
-          <td>25G</td>
-          <td>myvm2</td>
-        </tr>
-        <tr>
-          <td>25G</td>
-          <td>myvm3.img</td>
-        </tr>
-        <tr>
-          <td>25G</td>
-          <td>myvm4.img</td>
-        </tr>
-      </table>
     </div>
     <div class="resourcesdiv">
       <h3>CPU USAGE</h3>
@@ -135,28 +81,6 @@
           <td>40</td>
           <td>38</td>
           <td>2</td>
-        </tr>
-      </table>
-      <table>
-        <tr>
-          <th>CPUs</th>
-          <th>VM</th>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>myvm1</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>myvm2</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>myvm3.img</td>
-        </tr>
-        <tr>
-          <td>20</td>
-          <td>myvm4.img</td>
         </tr>
       </table>
       <table>
@@ -179,6 +103,59 @@
             <td>myvm3</td>
             <td>myvm4</td>
           </tr>
+        </tr>
+      </table>
+    </div>
+    <div class="resourcesdiv resourcesdivall">
+      <h3>ALL VMS USAGE</h3>
+      <table>
+        <tr>
+          <th>VM Name</th>
+          <th>State</th>
+          <th>Disk</th>
+          <th>Location</th>
+          <th>RAM</th>
+          <th>CPU</th>
+        </tr>
+        <tr>
+          <td>myvm1</td>
+          <td>running</td>
+          <td>60G</td>
+          <td>/data/myvm1.img</td>
+          <td>25G</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td>myvm2</td>
+          <td>running</td>
+          <td>60G</td>
+          <td>/data/myvm2.img</td>
+          <td>25G</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>myvm3</td>
+          <td>running</td>
+          <td>60G</td>
+          <td>/data/myvm3.img</td>
+          <td>25G</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>myvm4</td>
+          <td>running</td>
+          <td>80G</td>
+          <td>/data/myvm4.img</td>
+          <td>25G</td>
+          <td>20</td>
+        </tr>
+        <tr>
+          <th>Total</th>
+          <th></th>
+          <th>260G</th>
+          <th></th>
+          <th>100G</th>
+          <th>38</th>
         </tr>
       </table>
     </div>
