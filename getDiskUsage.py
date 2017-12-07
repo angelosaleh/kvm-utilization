@@ -7,7 +7,7 @@ def get_df():
   diskuse = diskuse.split("\n")
 
   trs=''
-  
+
   rowcounter=1
   for disk in diskuse:
     trs+='<tr>'
