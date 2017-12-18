@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
-import commands,re
+import commands,re,xml.etree.ElementTree as ET
 
 def get_df():
   diskuse = commands.getoutput("df -h")
   diskuse = diskuse.split("\n")
 
-  trs=''
+  trs = ''
 
   rowcounter=1
   for disk in diskuse:
@@ -40,6 +40,10 @@ installedram = installedram.split("\n")
 installedram = map(float, installedram)
 installedram = sum(installedram)/1024
 freeram=0
+cpudetailtable=''
+allocatedcpus = 0
+installedcpus = commands.getoutput("lscpu | awk '/^CPU\(s\):/ {print $2}'")
+freecpus=0
 vms = commands.getoutput("virsh list --all")
 vms = vms.split("\n")
 
@@ -51,12 +55,26 @@ for vmi in vms:
   vm = vmi.strip().split()
   vmxml = commands.getoutput("virsh dumpxml "+vm[1])
   vmxml = vmxml.split("\n")
+  cpu = '<root>'
   for detailxml in vmxml:
     if re.search("memory", detailxml):
       memory = re.search('\d+', detailxml)
       allocatedram += float(memory.group(0))/1024/1024
 
+    if re.search("cpu", detailxml):
+      cpu += detailxml+'\n'
+
+  cpu += '</root>'
+  cpu = ET.fromstring(cpu)
+  for vcpu in cpu.iter('vcpu'):
+    if vcpu.attrib.has_key("current"):
+      allocatedcpus += int(vcpu.attrib['current'])
+    else:
+      allocatedcpus += int(vcpu.text)
+
 freeram = float(installedram - allocatedram)
+freecpus = int(int(installedcpus) - allocatedcpus)
+
 ramtable='<div class="resourcesdiv">'
 ramtable+='<h3>RAM USAGE</h3>'
 ramtable+='<canvas id="ramchart"></canvas>'
@@ -74,6 +92,24 @@ ramtable+='</tr>'
 ramtable+='</table>'
 ramtable+='</div>'
 
+cpudiv='<div class="resourcesdiv">'
+cpudiv+='<h3>CPU USAGE</h3>'
+cpudiv+='<table>'
+cpudiv+='<tr>'
+cpudiv+='<th>Total CPUs</th>'
+cpudiv+='<th>Allocated</th>'
+cpudiv+='<th>Free</th>'
+cpudiv+='</tr>'
+cpudiv+='<tr>'
+cpudiv+='<td>'+installedcpus+'</td>'
+cpudiv+='<td>'+str(allocatedcpus)+'</td>'
+cpudiv+='<td>'+str(freecpus)+'</td>'
+cpudiv+='</tr>'
+cpudiv+='</table>'
+cpudiv+=cpudetailtable
+cpudiv+='</div>'
+
 indexf.write(ramtable)
+indexf.write(cpudiv)
 indexf.write('</body></html>')
 indexf.close()
