@@ -73,7 +73,9 @@ for vmi in vms:
       allocatedcpus += int(vcpu.text)
 
 freeram = float(installedram - allocatedram)
+freeram = '<td style="background-color: red;">'+str(freeram) if freeram < 0 else '<td>'+str(freeram)
 freecpus = int(int(installedcpus) - allocatedcpus)
+freecpus = '<td style="background-color: red;">'+str(freecpus) if freecpus < 0 else '<td>'+str(freecpus)
 
 ramtable='<div class="resourcesdiv">'
 ramtable+='<h3>RAM USAGE</h3>'
@@ -87,7 +89,7 @@ ramtable+='</tr>'
 ramtable+='<tr>'
 ramtable+='<td>'+str(installedram)+'G</td>'
 ramtable+='<td>'+str(allocatedram)+'G</td>'
-ramtable+='<td>'+str(freeram)+'G</td>'
+ramtable+=freeram+'G</td>'
 ramtable+='</tr>'
 ramtable+='</table>'
 ramtable+='</div>'
@@ -103,7 +105,7 @@ cpudiv+='</tr>'
 cpudiv+='<tr>'
 cpudiv+='<td>'+installedcpus+'</td>'
 cpudiv+='<td>'+str(allocatedcpus)+'</td>'
-cpudiv+='<td>'+str(freecpus)+'</td>'
+cpudiv+=freecpus+'</td>'
 cpudiv+='</tr>'
 cpudiv+='</table>'
 cpudiv+=cpudetailtable
