@@ -39,6 +39,7 @@ installedram = map(float, installedram)
 installedram = sum(installedram)/1024
 freeram = 0
 cpupinningtable = ''
+cpupthreadsiblinstable = ''
 allocatedcpus = 0
 installedcpus = commands.getoutput("lscpu | awk '/^CPU\(s\):/ {print $2}'")
 numaconf = commands.getoutput("lscpu | awk '/^NUMA node\w CPU\(s\):/ {print $1,$2,$4}'")
@@ -105,9 +106,12 @@ for vmi in vms:
 
 if len(cpupinningusage) > 0:
   cpupinningtable = '<h3>CPU PINNING</h3>'
+  cpupthreadsiblinstable = '<h3>Thread Siblings List</h3>'
   cpupinningtable += '<table>'
+  cpupthreadsiblinstable += '<table>'
   for numaindex in range(len(cputune)):
     cpupinningtable += '<tr>'
+    cpupthreadsiblinstable += '<tr>'
     cpupinningtable += '<th>' + cputune[numaindex][0] + '</th>'
     numacpupinning = ''
     for numacpu in cputune[numaindex][1]:
@@ -116,12 +120,17 @@ if len(cpupinningusage) > 0:
         numacpupinning +=  '<td>' + cpupinningusage[numacpu] + '</td>'
       else:
         numacpupinning +=  '<td></td>'
+      threadsibling = commands.getoutput("cat /sys/devices/system/cpu/cpu" + numacpu + "/topology/thread_siblings_list")
+      if not re.search(threadsibling, cpupthreadsiblinstable):
+        cpupthreadsiblinstable += '<td>' + threadsibling + '</td>'
     cpupinningtable += '</tr>'
+    cpupthreadsiblinstable += '</tr>'
     cpupinningtable += '<tr>'
     cpupinningtable += '<th></th>'
     cpupinningtable += numacpupinning
     cpupinningtable += '</tr>'
   cpupinningtable += '</table>'
+  cpupthreadsiblinstable += '</table>'
 
 freeram = float(installedram - allocatedram)
 freeram = '<td style="background-color: red;">' + str(freeram) if freeram < 0 else '<td>' + str(freeram)
@@ -160,6 +169,7 @@ cpudiv += freecpus + '</td>'
 cpudiv += '</tr>'
 cpudiv += '</table>'
 cpudiv += cpupinningtable
+cpudiv += cpupthreadsiblinstable
 cpudiv += '</div>'
 
 indexf.write(ramtable)

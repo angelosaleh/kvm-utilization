@@ -1,8 +1,8 @@
 .resourcesdiv {
   display: inline-grid;
   margin: 0.2em;
-  border: 1px solid;
-  border-radius: 1em;
+  border: 0.2em solid #1c8686;
+  border-radius: 1.5em;
 }
 
 h3 {
@@ -16,11 +16,12 @@ table {
 }
 
 td, th {
-  border: 1px solid #dddddd;
+  border: 1px solid #1c8686;
   padding: 8px;
   text-align: left;
 }
 
 th {
   background-color: #dddddd;
+  text-align: center;
 }
