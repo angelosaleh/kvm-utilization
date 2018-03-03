@@ -2,7 +2,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="styles.css">
-    <title>KVM utilizaion on %host_title%</title>
+    <title>KVM utilizaion on kvmhost1</title>
   </head>
   <body>
     <div class="resourcesdiv">
@@ -83,126 +83,218 @@
           <td>2</td>
         </tr>
       </table>
+      <h3>Thread Siblings List</h3>
+      <table>
+        <tr>
+          <th>Numa Node 0</th>
+          <th>Numa Node 1</th>
+        </tr>
+        <tr>
+          <td>0,20</td>
+          <td>1,21</td>
+        </tr>
+        <tr>
+          <td>2,22</td>
+          <td>3,23</td>
+        </tr>
+        <tr>
+          <td>4,24</td>
+          <td>5,25</td>
+        </tr>
+        <tr>
+          <td>6,26</td>
+          <td>7,27</td>
+        </tr>
+        <tr>
+          <td>8,28</td>
+          <td>9,29</td>
+        </tr>
+        <tr>
+          <td>10,30</td>
+          <td>11,31</td>
+        </tr>
+        <tr>
+          <td>12,32</td>
+          <td>13,33</td>
+        </tr>
+        <tr>
+          <td>14,34</td>
+          <td>15,35</td>
+        </tr>
+        <tr>
+          <td>16,36</td>
+          <td>17,37</td>
+        </tr>
+        <tr>
+          <td>18,38</td>
+          <td>19,39</td>
+        </tr>
+      </table>
       <h3>CPU PINNING</h3>
       <table>
         <tr>
           <th>Numa Node 0</th>
-          <th>0</th>
-          <th>2</th>
-          <th>4</th>
-          <th>6</th>
-          <th>8</th>
-          <th>10</th>
-          <th>12</th>
-          <th>14</th>
-          <th>16</th>
-          <th>18</th>
-          <th>20</th>
-          <th>22</th>
-          <th>24</th>
-          <th>26</th>
-          <th>28</th>
-          <th>30</th>
-          <th>32</th>
-          <th>34</th>
-          <th>36</th>
-          <th>38</th>
-        </tr>
-        <tr>
-          <th></th>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm2<br>myvm4</td>
-          <td>myvm2<br>myvm4</td>
-          <td>myvm2<br>myvm4</td>
-          <td>myvm4</td>
-          <td>myvm4</td>
-          <td>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm1<br>myvm4</td>
-          <td>myvm2<br>myvm4</td>
-          <td>myvm2<br>myvm4</td>
-          <td>myvm2<br>myvm4</td>
-          <td>myvm4</td>
-        </tr>
-        <tr>
           <th>Numa Node 1</th>
+        </tr>
+        <tr>
+          <th>0</th>
           <th>1</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td>myvm3</td>
+        </tr>
+        <tr>
+          <th>2</th>
           <th>3</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>4</th>
           <th>5</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>6</th>
           <th>7</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>8</th>
           <th>9</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>10</th>
           <th>11</th>
+        </tr>
+        <tr>
+          <td>myvm2<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>12</th>
           <th>13</th>
+        </tr>
+        <tr>
+          <td>myvm2<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>14</th>
           <th>15</th>
+        </tr>
+        <tr>
+          <td>myvm2<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>16</th>
           <th>17</th>
+        </tr>
+        <tr>
+          <td>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>18</th>
           <th>19</th>
+        </tr>
+        <tr>
+          <td>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>20</th>
           <th>21</th>
+        </tr>
+        <tr>
+          <td>myvm4</td>
+          <td>myvm3</td>
+        </tr>
+        <tr>
+          <th>22</th>
           <th>23</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>24</th>
           <th>25</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>26</th>
           <th>27</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>28</th>
           <th>29</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>30</th>
           <th>31</th>
+        </tr>
+        <tr>
+          <td>myvm1<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>32</th>
           <th>33</th>
+        </tr>
+        <tr>
+          <td>myvm2<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>34</th>
           <th>35</th>
+        </tr>
+        <tr>
+          <td>myvm2<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>36</th>
           <th>37</th>
+        </tr>
+        <tr>
+          <td>myvm2<br>myvm4</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>38</th>
           <th>39</th>
         </tr>
         <tr>
-          <th></th>
-          <td>myvm3</td>
+          <td>myvm4</td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>myvm3</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
-      <h3>Thread Siblings List</h3>
-      <table>
-        <tr>
-          <td>0,20</td>
-          <td>2,22</td>
-          <td>4,24</td>
-          <td>6,26</td>
-          <td>8,28</td>
-          <td>10,30</td>
-          <td>12,32</td>
-          <td>14,34</td>
-          <td>16,36</td>
-          <td>18,38</td>
-        </tr>
-        <tr>
-          <td>1,21</td>
-          <td>3,23</td>
-          <td>5,25</td>
-          <td>7,27</td>
-          <td>9,29</td>
-          <td>11,31</td>
-          <td>13,33</td>
-          <td>15,35</td>
-          <td>17,37</td>
-          <td>19,39</td>
         </tr>
       </table>
     </div>

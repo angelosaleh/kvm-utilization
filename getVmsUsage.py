@@ -28,7 +28,7 @@ def get_df():
 toppart = '<!doctype html><html><head><link rel="stylesheet" href="styles.css"><title>KVM utilizaion on ' + commands.getoutput("hostname -s") + '</title></head><body>'
 diskusetable = get_df()
 
-indexf = open('index.html','w')
+indexf = open(commands.getoutput("hostname -s") + '.html','w')
 indexf.write(toppart)
 indexf.write(diskusetable)
 
@@ -49,6 +49,12 @@ cpupinningusage = {}
 vms = commands.getoutput("virsh list --all")
 vms = vms.split("\n")
 
+cpupthreadsiblinstable = '<h3>Thread Siblings List</h3>'
+cpupthreadsiblinstable += '<table>'
+cpupthreadsiblinstable += '<tr>'
+cpupinningtable = '<h3>CPU PINNING</h3>'
+cpupinningtable += '<table>'
+cpupinningtable += '<tr>'
 socketkey = 0
 numaconf = numaconf.split("\n")
 for numanode in numaconf:
@@ -66,7 +72,11 @@ for numanode in numaconf:
     numanode[2] = numanode[2].split(",")
   cputune[socketkey].append(numanode[0] + ' ' + numanode[1])
   cputune[socketkey].append(numanode[2])
+  cpupinningtable += '<th>' + cputune[socketkey][0] + '</th>'
+  cpupthreadsiblinstable += '<th>' + cputune[socketkey][0] + '</th>'
   socketkey += 1
+cpupinningtable += '</tr>'
+cpupthreadsiblinstable += '</tr>'
 
 counter =- 1
 for vmi in vms:
@@ -81,10 +91,8 @@ for vmi in vms:
     if re.search("memory", detailxml):
       memory = re.search('\d+', detailxml)
       allocatedram += float(memory.group(0))/1024/1024
-
     if re.search("cpu", detailxml):
       cpu += detailxml + '\n'
-
   cpu += '</root>'
   cpu = ET.fromstring(cpu)
   for vcpu in cpu.iter('vcpu'):
@@ -105,31 +113,45 @@ for vmi in vms:
               cpupinningusage[physicalcpupinning] = vm[1]
 
 if len(cpupinningusage) > 0:
-  cpupinningtable = '<h3>CPU PINNING</h3>'
-  cpupthreadsiblinstable = '<h3>Thread Siblings List</h3>'
-  cpupinningtable += '<table>'
-  cpupthreadsiblinstable += '<table>'
-  for numaindex in range(len(cputune)):
+  numaindex1 = 0
+  while (numaindex1 < len(cputune[0][1])):
     cpupinningtable += '<tr>'
     cpupthreadsiblinstable += '<tr>'
-    cpupinningtable += '<th>' + cputune[numaindex][0] + '</th>'
     numacpupinning = ''
-    for numacpu in cputune[numaindex][1]:
-      cpupinningtable += '<th>' + numacpu + '</th>'
-      if cpupinningusage.has_key(numacpu):
-        numacpupinning +=  '<td>' + cpupinningusage[numacpu] + '</td>'
+    numaindex2 = 0
+    while (numaindex2 < len(cputune)):
+      cpupinningtable += '<th>' + str(cputune[numaindex2][1][numaindex1]) + '</th>'
+      if cpupinningusage.has_key(cputune[numaindex2][1][numaindex1]):
+        numacpupinning += '<td>' + cpupinningusage[cputune[numaindex2][1][numaindex1]] + '</td>'
       else:
         numacpupinning +=  '<td></td>'
-      threadsibling = commands.getoutput("cat /sys/devices/system/cpu/cpu" + numacpu + "/topology/thread_siblings_list")
-      if not re.search(threadsibling, cpupthreadsiblinstable):
+      threadsibling = commands.getoutput("cat /sys/devices/system/cpu/cpu" + str(cputune[numaindex2][1][numaindex1]) + "/topology/thread_siblings_list")
+      if threadsibling.isdigit():
         cpupthreadsiblinstable += '<td>' + threadsibling + '</td>'
+      elif not re.search(threadsibling, cpupthreadsiblinstable):
+          cpupthreadsiblinstable += '<td>' + threadsibling + '</td>'
+      numaindex2 += 1
     cpupinningtable += '</tr>'
+    cpupinningtable += '<tr>' + numacpupinning + '</tr>'
     cpupthreadsiblinstable += '</tr>'
-    cpupinningtable += '<tr>'
-    cpupinningtable += '<th></th>'
-    cpupinningtable += numacpupinning
-    cpupinningtable += '</tr>'
+    numaindex1 += 1
   cpupinningtable += '</table>'
+  cpupthreadsiblinstable += '</table>'
+else:
+  cpupinningtable = ''
+  numaindex1 = 0
+  while (numaindex1 < len(cputune[0][1])):
+    cpupthreadsiblinstable += '<tr>'
+    numaindex2 = 0
+    while (numaindex2 < len(cputune)):
+      threadsibling = commands.getoutput("cat /sys/devices/system/cpu/cpu" + str(cputune[numaindex2][1][numaindex1]) + "/topology/thread_siblings_list")
+      if threadsibling.isdigit():
+        cpupthreadsiblinstable += '<td>' + threadsibling + '</td>'
+      elif not re.search(threadsibling, cpupthreadsiblinstable):
+          cpupthreadsiblinstable += '<td>' + threadsibling + '</td>'
+      numaindex2 += 1
+    cpupthreadsiblinstable += '</tr>'
+    numaindex1 += 1
   cpupthreadsiblinstable += '</table>'
 
 freeram = float(installedram - allocatedram)
@@ -168,8 +190,8 @@ cpudiv += '<td>'+ str(allocatedcpus) + '</td>'
 cpudiv += freecpus + '</td>'
 cpudiv += '</tr>'
 cpudiv += '</table>'
-cpudiv += cpupinningtable
 cpudiv += cpupthreadsiblinstable
+cpudiv += cpupinningtable
 cpudiv += '</div>'
 
 indexf.write(ramtable)

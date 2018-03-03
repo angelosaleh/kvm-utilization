@@ -1,8 +1,10 @@
 .resourcesdiv {
-  display: inline-grid;
-  margin: 0.2em;
-  border: 0.2em solid #1c8686;
   border-radius: 1.5em;
+  border: 0.2em solid #1c8686;
+  display: grid;
+  margin: 2em auto;
+  text-align: center;
+  width: 60em;
 }
 
 h3 {
@@ -11,17 +13,17 @@ h3 {
 
 table {
   font-family: arial, sans-serif;
+  margin: 0 auto;
   margin: left;
-  padding: 5px; 
+  padding: 5px;
 }
 
 td, th {
   border: 1px solid #1c8686;
   padding: 8px;
-  text-align: left;
+  text-align: center;
 }
 
 th {
   background-color: #dddddd;
-  text-align: center;
 }
