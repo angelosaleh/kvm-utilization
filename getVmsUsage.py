@@ -48,6 +48,9 @@ cputune = {}
 cpupinningusage = {}
 vms = commands.getoutput("virsh list --all")
 vms = vms.split("\n")
+allvmsdets = ''
+totaldiskusage = 0
+allocatedmaxcpus = 0
 
 cpupthreadsiblinstable = '<h3>Thread Siblings List</h3>'
 cpupthreadsiblinstable += '<table>'
@@ -85,21 +88,43 @@ for vmi in vms:
     continue
   vm = vmi.strip().split()
   vmxml = commands.getoutput("virsh dumpxml " + vm[1])
+  allvmsdets += '<tr><td>' + vm[1] + '</td>'
+  allvmsdets += '<td>' + vm[2] + '</td>'
+  vmautostart = commands.getoutput("virsh list --autostart | grep -c " + vm[1])
+  if int(vmautostart) > 0:
+    allvmsdets += '<td>yes</td>'
+  else:
+    allvmsdets += '<td>no</td>'
   vmxml = vmxml.split("\n")
   cpu = '<root>'
+  disk = '<root>'
   for detailxml in vmxml:
     if re.search("memory", detailxml):
       memory = re.search('\d+', detailxml)
       allocatedram += float(memory.group(0))/1024/1024
     if re.search("cpu", detailxml):
       cpu += detailxml + '\n'
+    if re.search("disk|file", detailxml):
+      disk += detailxml + '\n'
   cpu += '</root>'
+  disk += '</root>'
+  disks = ''
+  diskssizes = ''
   cpu = ET.fromstring(cpu)
+  disk = ET.fromstring(disk)
   for vcpu in cpu.iter('vcpu'):
     if vcpu.attrib.has_key("current"):
       allocatedcpus += int(vcpu.attrib['current'])
     else:
       allocatedcpus += int(vcpu.text)
+  for vdisk in disk.iter('source'):
+    if vdisk.attrib.has_key("file"):
+      disks += vdisk.attrib['file'] + '<br>'
+      diskssizes += commands.getoutput("du -sh " + vdisk.attrib['file'] + " | awk '{ print $1 }'") + '<br>'
+  allvmsdets += '<td>' + diskssizes + '</td>'
+  allvmsdets += '<td>' + disks + '</td>'
+  allvmsdets += '<td>' + str(float(memory.group(0))/1024/1024) + 'G</td>'
+  allvmsdets += '</tr>'
   for vcputune in cpu.iter('cputune'):
     for vcpupin in vcputune:
       cpupinning = vcpupin.attrib['cpuset'].split(",")
@@ -194,7 +219,35 @@ cpudiv += cpupthreadsiblinstable
 cpudiv += cpupinningtable
 cpudiv += '</div>'
 
+allvmsdiv = '<div class="resourcesdiv">'
+allvmsdiv += '<h3>ALL VMS USAGE</h3>'
+allvmsdiv += '<table>'
+allvmsdiv += '<tr>'
+allvmsdiv += '<th>VM Name</th>'
+allvmsdiv += '<th>State</th>'
+allvmsdiv += '<th>Autostart</th>'
+allvmsdiv += '<th>Disk</th>'
+allvmsdiv += '<th>Location</th>'
+allvmsdiv += '<th>RAM</th>'
+allvmsdiv += '<th>Current CPU</th>'
+allvmsdiv += '<th>Max CPU</th>'
+allvmsdiv += '</tr>'
+allvmsdiv += allvmsdets
+allvmsdiv += '<tr>'
+allvmsdiv += '<th>Total</th>'
+allvmsdiv += '<th></th>'
+allvmsdiv += '<th></th>'
+allvmsdiv += '<th>' + str(totaldiskusage) + 'G</th>'
+allvmsdiv += '<th></th>'
+allvmsdiv += '<th>' + str(allocatedram) + 'G</th>'
+allvmsdiv += '<th>' + str(allocatedcpus) + '</th>'
+allvmsdiv += '<th>' + str(allocatedmaxcpus) + '</th>'
+allvmsdiv += '</tr>'
+allvmsdiv += '</table>'
+allvmsdiv += '</div>'
+
 indexf.write(ramtable)
 indexf.write(cpudiv)
+indexf.write(allvmsdiv)
 indexf.write('</body></html>')
 indexf.close()

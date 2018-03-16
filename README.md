@@ -7,6 +7,8 @@ Just run the command ./getUsage.py and a report with a chart and tables will be 
 ## Dependencies
   - Of course the Host has to be a linux
   - dmidecode
+  - du
   - awk
+  - grep
   - virsh
   - lscpu
