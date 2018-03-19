@@ -54,20 +54,22 @@
       </table>
     </div>
     <div class="resourcesdiv">
-      <h3>RAM USAGE</h3>
-      <canvas id="ramchart"></canvas>
-      <table>
-        <tr>
-          <th>Installed</th>
-          <th>Allocated</th>
-          <th>Free</th>
-        </tr>
-        <tr>
-          <td>128G</td>
-          <td>100G</td>
-          <td>28G</td>
-        </tr>
-      </table>
+      <div class="resourcesdivpie">
+        <h3>RAM USAGE</h3>
+        <canvas id="ramchart"></canvas>
+        <table>
+          <tr>
+            <th>Installed</th>
+            <th>Allocated</th>
+            <th>Free</th>
+          </tr>
+          <tr>
+            <td>128G</td>
+            <td>100G</td>
+            <td>28G</td>
+          </tr>
+        </table>
+      </div>
     </div>
     <div class="resourcesdiv">
       <h3>CPU USAGE</h3>
@@ -368,7 +370,7 @@
       var ramctx = document.getElementById("ramchart");
       data = {
         datasets: [{
-          data: [10,138],
+          data: [28,100],
           backgroundColor:[
             'green',
             'red',

@@ -110,20 +110,32 @@ for vmi in vms:
   disk += '</root>'
   disks = ''
   diskssizes = ''
+  currentcpus = ''
+  maxcpus = ''
   cpu = ET.fromstring(cpu)
   disk = ET.fromstring(disk)
   for vcpu in cpu.iter('vcpu'):
     if vcpu.attrib.has_key("current"):
       allocatedcpus += int(vcpu.attrib['current'])
+      currentcpus = vcpu.attrib['current']
     else:
       allocatedcpus += int(vcpu.text)
+    allocatedmaxcpus += int(vcpu.text)
+    maxcpus = vcpu.text
+    if not currentcpus:
+      currentcpus = vcpu.text
   for vdisk in disk.iter('source'):
     if vdisk.attrib.has_key("file"):
       disks += vdisk.attrib['file'] + '<br>'
-      diskssizes += commands.getoutput("du -sh " + vdisk.attrib['file'] + " | awk '{ print $1 }'") + '<br>'
+      sizeofimage = commands.getoutput("du " + vdisk.attrib['file'] + " | awk '{ print $1 }'")
+      sizeofimage = round(float(sizeofimage)/1024/1024,1)
+      totaldiskusage += sizeofimage
+      diskssizes += str(sizeofimage) + 'G<br>'
   allvmsdets += '<td>' + diskssizes + '</td>'
   allvmsdets += '<td>' + disks + '</td>'
   allvmsdets += '<td>' + str(float(memory.group(0))/1024/1024) + 'G</td>'
+  allvmsdets += '<td>' + currentcpus + '</td>'
+  allvmsdets += '<td>' + maxcpus + '</td>'
   allvmsdets += '</tr>'
   for vcputune in cpu.iter('cputune'):
     for vcpupin in vcputune:
@@ -185,6 +197,7 @@ freecpus = int(int(installedcpus) - allocatedcpus)
 freecpus = '<td style="background-color: red;">' + str(freecpus) if freecpus < 0 else '<td>' + str(freecpus)
 
 ramtable = '<div class="resourcesdiv">'
+ramtable += '<div class="resourcesdivpie">'
 ramtable += '<h3>RAM USAGE</h3>'
 ramtable += '<canvas id="ramchart"></canvas>'
 ramtable += '<table>'
@@ -199,6 +212,7 @@ ramtable += '<td>' + str(allocatedram) + 'G</td>'
 ramtable += freeram + 'G</td>'
 ramtable += '</tr>'
 ramtable += '</table>'
+ramtable += '</div>'
 ramtable += '</div>'
 
 cpudiv = '<div class="resourcesdiv">'
@@ -246,8 +260,45 @@ allvmsdiv += '</tr>'
 allvmsdiv += '</table>'
 allvmsdiv += '</div>'
 
+javascript = '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js" '
+javascript += 'integrity="sha256-N4u5BjTLNwmGul6RgLoESPNqDFVUibVuOYhP4gJgrew=" crossorigin="anonymous"></script>'
+javascript += '<script>'
+javascript += 'var ramctx = document.getElementById("ramchart");'
+javascript += 'data = {'
+javascript += 'datasets: [{'
+javascript += 'data: [' + str(float(installedram - allocatedram)) + ',' + str(allocatedram) + '],'
+javascript += 'backgroundColor:['
+javascript += '"green",'
+javascript += '"red",'
+javascript += ']'
+javascript += '}],'
+javascript += 'labels: ['
+javascript += '"Free ' + str(float(installedram - allocatedram)) + 'G",'
+javascript += '"Allocated '+ str(allocatedram) + 'G"'
+javascript += '],'
+javascript += '};'
+javascript += ''
+javascript += 'var myPieChart = new Chart(ramctx,{'
+javascript += 'type: "pie",'
+javascript += 'data: data,'
+javascript += 'options: {'
+javascript += 'tooltips: {'
+javascript += 'callbacks: {'
+javascript += 'label: function(tooltipItem, data) {'
+javascript += 'return data.labels[tooltipItem.index];'
+javascript += '}'
+javascript += '}'
+javascript += '},'
+javascript += 'legend: {'
+javascript += 'onClick: (e) => e.stopPropagation()'
+javascript += '}'
+javascript += '}'
+javascript += '});'
+javascript += '</script>'
+
 indexf.write(ramtable)
 indexf.write(cpudiv)
 indexf.write(allvmsdiv)
+indexf.write(javascript)
 indexf.write('</body></html>')
 indexf.close()
