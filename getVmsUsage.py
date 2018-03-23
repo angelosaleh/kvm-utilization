@@ -36,7 +36,7 @@ allocatedram = 0
 installedram = commands.getoutput("dmidecode --type memory | awk '/Size/ {print $0}' | awk '/MB/ {print $2}'")
 installedram = installedram.split("\n")
 installedram = map(float, installedram)
-installedram = sum(installedram)/1024
+installedram = round(sum(installedram)/1024,1)
 freeram = 0
 cpupinningtable = ''
 cpupthreadsiblinstable = ''
@@ -133,7 +133,7 @@ for vmi in vms:
       diskssizes += str(sizeofimage) + 'G<br>'
   allvmsdets += '<td>' + diskssizes + '</td>'
   allvmsdets += '<td>' + disks + '</td>'
-  allvmsdets += '<td>' + str(float(memory.group(0))/1024/1024) + 'G</td>'
+  allvmsdets += '<td>' + str(round(float(memory.group(0))/1024/1024,1)) + 'G</td>'
   allvmsdets += '<td>' + currentcpus + '</td>'
   allvmsdets += '<td>' + maxcpus + '</td>'
   allvmsdets += '</tr>'
@@ -191,7 +191,9 @@ else:
     numaindex1 += 1
   cpupthreadsiblinstable += '</table>'
 
+allocatedram = round(allocatedram,1)
 freeram = float(installedram - allocatedram)
+freeram = round(freeram,1)
 freeram = '<td style="background-color: red;">' + str(freeram) if freeram < 0 else '<td>' + str(freeram)
 freecpus = int(int(installedcpus) - allocatedcpus)
 freecpus = '<td style="background-color: red;">' + str(freecpus) if freecpus < 0 else '<td>' + str(freecpus)
