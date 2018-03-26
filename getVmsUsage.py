@@ -114,7 +114,20 @@ for vmi in vms:
   maxcpus = ''
   cpu = ET.fromstring(cpu)
   disk = ET.fromstring(disk)
-  for vcpu in cpu.iter('vcpu'):
+  et_cpu_vcpu_iterator = ''
+  et_cpu_cputune_iterator = ''
+  et_disk_source_iterator = ''
+
+  if hasattr(cpu, 'iter'):
+    et_cpu_vcpu_iterator = cpu.iter('vcpu')
+    et_cpu_cputune_iterator = cpu.iter('cputune')
+    et_disk_source_iterator = disk.iter('source')
+  else:
+    et_cpu_vcpu_iterator = cpu.getiterator('vcpu')
+    et_cpu_cputune_iterator = cpu.getiterator('cputune')
+    et_disk_source_iterator = disk.getiterator('source')
+
+  for vcpu in et_cpu_vcpu_iterator:
     if vcpu.attrib.has_key("current"):
       allocatedcpus += int(vcpu.attrib['current'])
       currentcpus = vcpu.attrib['current']
@@ -124,7 +137,7 @@ for vmi in vms:
     maxcpus = vcpu.text
     if not currentcpus:
       currentcpus = vcpu.text
-  for vdisk in disk.iter('source'):
+  for vdisk in et_disk_source_iterator:
     if vdisk.attrib.has_key("file"):
       disks += vdisk.attrib['file'] + '<br>'
       sizeofimage = commands.getoutput("du " + vdisk.attrib['file'] + " | awk '{ print $1 }'")
@@ -137,7 +150,7 @@ for vmi in vms:
   allvmsdets += '<td>' + currentcpus + '</td>'
   allvmsdets += '<td>' + maxcpus + '</td>'
   allvmsdets += '</tr>'
-  for vcputune in cpu.iter('cputune'):
+  for vcputune in et_cpu_cputune_iterator:
     for vcpupin in vcputune:
       cpupinning = vcpupin.attrib['cpuset'].split(",")
       for physicalcpupinning in cpupinning:
