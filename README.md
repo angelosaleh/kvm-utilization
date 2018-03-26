@@ -17,3 +17,7 @@ Just run the command ./getVmsUsage.py and a report with a chart and tables will 
 ## Source
 
 https://github.com/angelosaleh/kvm-utilization
+
+## Preview
+
+![kvm-utilization](kvm.png)
