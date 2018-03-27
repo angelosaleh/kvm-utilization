@@ -6,10 +6,18 @@ def get_df():
   diskuse = commands.getoutput("df -h")
   diskuse = diskuse.split("\n")
   trs = ''
-  rowcounter=1
+  rowcounter = 1
+  sametrflag = False
   for disk in diskuse:
-    trs += '<tr>'
+    if not sametrflag:
+      trs += '<tr>'
+    else:
+      sametrflag = False
     fields = disk.strip().split()
+    if len(fields) == 1:
+      trs += '<td>' + fields[0] + '</td>'
+      sametrflag = True
+      continue
     internalrowcounter=0
     for infields in fields:
       if rowcounter == 1:
