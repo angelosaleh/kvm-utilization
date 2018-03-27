@@ -64,13 +64,15 @@ for numanode in numaconf:
   numanode = numanode.split(" ")
   cputune[socketkey] = []
   if re.search("-", numanode[2]):
-    numanode[2] = numanode[2].split("-")
-    indexrangenumanode = int(numanode[2][0])
-    lengthrangenumanode = int(numanode[2][1])
+    cpuranges = numanode[2].split(",")
     numanode[2] = []
-    while (indexrangenumanode <= lengthrangenumanode):
-      numanode[2].append(indexrangenumanode)
-      indexrangenumanode += 1
+    for each_cpuranges in cpuranges:
+      each_cpuranges = each_cpuranges.split("-")
+      indexrangenumanode = int(each_cpuranges[0])
+      lengthrangenumanode = int(each_cpuranges[1])
+      while (indexrangenumanode <= lengthrangenumanode):
+        numanode[2].append(indexrangenumanode)
+        indexrangenumanode += 1
   else:
     numanode[2] = numanode[2].split(",")
   cputune[socketkey].append(numanode[0] + ' ' + numanode[1])
