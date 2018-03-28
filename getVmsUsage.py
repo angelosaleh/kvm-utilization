@@ -151,7 +151,10 @@ for vmi in vms:
     if vdisk.attrib.has_key("file"):
       disks += vdisk.attrib['file'] + '<br>'
       sizeofimage = commands.getoutput("du " + vdisk.attrib['file'] + " | awk '{ print $1 }'")
-      sizeofimage = round(float(sizeofimage)/1024/1024,1)
+      try:
+        sizeofimage = round(float(sizeofimage)/1024/1024,1)
+      except:
+        sizeofimage = 0
       totaldiskusage += sizeofimage
       diskssizes += str(sizeofimage) + 'G<br>'
   allvmsdets += '<td>' + diskssizes + '</td>'
