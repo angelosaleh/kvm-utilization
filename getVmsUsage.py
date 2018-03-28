@@ -99,7 +99,10 @@ for vmi in vms:
   vm = vmi.strip().split()
   vmxml = commands.getoutput("virsh dumpxml " + vm[1])
   allvmsdets += '<tr><td>' + vm[1] + '</td>'
-  allvmsdets += '<td>' + vm[2] + '</td>'
+  if len(vm) > 3:
+    allvmsdets += '<td>' + vm[2] + ' ' + vm[3] + '</td>'
+  else:
+    allvmsdets += '<td>' + vm[2] + '</td>'
   vmautostart = commands.getoutput("virsh list --autostart | grep -c " + vm[1])
   if int(vmautostart) > 0:
     allvmsdets += '<td>yes</td>'
