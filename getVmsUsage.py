@@ -117,7 +117,7 @@ for vmi in vms:
       allocatedram += float(memory.group(0))/1024/1024
     if re.search("cpu", detailxml):
       cpu += detailxml + '\n'
-    if re.search("disk|file", detailxml):
+    if re.search("disk|source", detailxml):
       disk += detailxml + '\n'
   cpu += '</root>'
   disk += '</root>'
@@ -158,6 +158,12 @@ for vmi in vms:
         sizeofimage = round(float(sizeofimage)/1024/1024,1)
       except:
         sizeofimage = 0
+      totaldiskusage += sizeofimage
+      diskssizes += str(sizeofimage) + 'G<br>'
+    elif vdisk.attrib.has_key("dev"):
+      disks += vdisk.attrib['dev'] + '<br>'
+      sizeofimage = commands.getoutput("fdisk -l " + vdisk.attrib['dev'] + " | grep Disk | head -1 | awk '{ print $3 }' ")
+      sizeofimage = float(sizeofimage)
       totaldiskusage += sizeofimage
       diskssizes += str(sizeofimage) + 'G<br>'
   allvmsdets += '<td>' + diskssizes + '</td>'

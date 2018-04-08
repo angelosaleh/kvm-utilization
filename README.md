@@ -13,6 +13,8 @@ Just run the command ./getVmsUsage.py and a report with a chart and tables will 
   - grep
   - virsh
   - lscpu
+  - head
+  - fdisk
 
 ## Source
 
