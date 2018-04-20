@@ -33,11 +33,13 @@ def get_df():
     trs += '</tr>'
   return '<div class="resourcesdiv"><h3>DISK USAGE</h3><table><tr><th colspan="6">df -- display free disk space</th></tr>' + trs + '</table></div>'
 
-toppart = '<!doctype html><html><head><link rel="stylesheet" href="styles.css"><title>KVM utilizaion on ' + commands.getoutput("hostname -s") + '</title></head><body>'
+hostname = commands.getoutput("hostname -s")
+toppart = '<!doctype html><html><head><link rel="stylesheet" href="styles.css"><title>KVM utilizaion on ' + hostname + '</title></head><body>'
 diskusetable = get_df()
 
-indexf = open(commands.getoutput("hostname -s") + '.html','w')
+indexf = open(hostname + '.html','w')
 indexf.write(toppart)
+indexf.write('<h2 class="maintitle" >kvm utilization on ' + hostname + ' as of ' + commands.getoutput("date") + '</h2>')
 indexf.write(diskusetable)
 
 allocatedram = 0
