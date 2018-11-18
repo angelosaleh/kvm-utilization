@@ -43,6 +43,7 @@ indexf.write('<h2 class="maintitle" >kvm utilization on ' + hostname + ' as of '
 indexf.write(diskusetable)
 
 allocatedram = 0
+allocatedmaxram = 0
 installedram = commands.getoutput("dmidecode --type memory | awk '/Size/ {print $0}' | awk '/MB/ {print $2}'")
 installedram = installedram.split("\n")
 installedram = map(float, installedram)
@@ -114,9 +115,12 @@ for vmi in vms:
   cpu = '<root>'
   disk = '<root>'
   for detailxml in vmxml:
+    if re.search("currentMemory", detailxml):
+      currentMemory = re.search('\d+', detailxml)
+      allocatedram += float(currentMemory.group(0))/1024/1024
     if re.search("memory", detailxml):
       memory = re.search('\d+', detailxml)
-      allocatedram += float(memory.group(0))/1024/1024
+      allocatedmaxram += float(memory.group(0))/1024/1024
     if re.search("cpu", detailxml):
       cpu += detailxml + '\n'
     if re.search("disk|source", detailxml):
@@ -170,6 +174,7 @@ for vmi in vms:
       diskssizes += str(sizeofimage) + 'G<br>'
   allvmsdets += '<td>' + diskssizes + '</td>'
   allvmsdets += '<td>' + disks + '</td>'
+  allvmsdets += '<td>' + str(round(float(currentMemory.group(0))/1024/1024,1)) + 'G</td>'
   allvmsdets += '<td>' + str(round(float(memory.group(0))/1024/1024,1)) + 'G</td>'
   allvmsdets += '<td>' + currentcpus + '</td>'
   allvmsdets += '<td>' + maxcpus + '</td>'
@@ -229,6 +234,7 @@ else:
   cpupthreadsiblinstable += '</table>'
 
 allocatedram = round(allocatedram,1)
+allocatedmaxram = round(allocatedmaxram,1)
 freeram = float(installedram - allocatedram)
 freeram = round(freeram,1)
 freeram = '<td style="background-color: red;">' + str(freeram) if freeram < 0 else '<td>' + str(freeram)
@@ -281,7 +287,8 @@ allvmsdiv += '<th>State</th>'
 allvmsdiv += '<th>Autostart</th>'
 allvmsdiv += '<th>Disk</th>'
 allvmsdiv += '<th>Location</th>'
-allvmsdiv += '<th>RAM</th>'
+allvmsdiv += '<th>Current RAM</th>'
+allvmsdiv += '<th>Max RAM</th>'
 allvmsdiv += '<th>Current CPU</th>'
 allvmsdiv += '<th>Max CPU</th>'
 allvmsdiv += '</tr>'
@@ -293,6 +300,7 @@ allvmsdiv += '<th></th>'
 allvmsdiv += '<th>' + str(totaldiskusage) + 'G</th>'
 allvmsdiv += '<th></th>'
 allvmsdiv += '<th>' + str(allocatedram) + 'G</th>'
+allvmsdiv += '<th>' + str(allocatedmaxram) + 'G</th>'
 allvmsdiv += '<th>' + str(allocatedcpus) + '</th>'
 allvmsdiv += '<th>' + str(allocatedmaxcpus) + '</th>'
 allvmsdiv += '</tr>'
