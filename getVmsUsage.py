@@ -44,10 +44,23 @@ indexf.write(diskusetable)
 
 allocatedram = 0
 allocatedmaxram = 0
-installedram = commands.getoutput("dmidecode --type memory | awk '/Size/ {print $0}' | awk '/MB/ {print $2}'")
-installedram = installedram.split("\n")
-installedram = map(float, installedram)
-installedram = round(sum(installedram)/1024,1)
+installedramMB = commands.getoutput("dmidecode --type memory | awk '/Size/ {print $0}' | awk '/MB/ {print $2}'")
+installedramGB = commands.getoutput("dmidecode --type memory | awk '/Size/ {print $0}' | awk '/GB/ {print $2}'")
+if installedramMB != '':
+  installedramMB = installedramMB.split("\n")
+  installedramMB = map(float, installedramMB)
+  installedramMB = round(sum(installedramMB)/1024,1)
+else:
+  installedramMB = 0
+
+if installedramGB != '':
+  installedramGB = installedramGB.split("\n")
+  installedramGB = map(float, installedramGB)
+  installedramGB = round(sum(installedramGB),1)
+else:
+  installedramGB = 0
+
+installedram = installedramMB + installedramGB
 freeram = 0
 cpupinningtable = ''
 cpupthreadsiblinstable = ''
@@ -181,8 +194,20 @@ for vmi in vms:
   allvmsdets += '</tr>'
   for vcputune in et_cpu_cputune_iterator:
     for vcpupin in vcputune:
-      cpupinning = vcpupin.attrib['cpuset'].split(",")
+      if re.search("-", vcpupin.attrib['cpuset']):
+        cpupinningranges = vcpupin.attrib['cpuset'].split(",")
+        cpupinning = []
+        for each_cpupinningranges in cpupinningranges:
+          each_cpupinningranges = each_cpupinningranges.split("-")
+          indexrangecpupinning = int(each_cpupinningranges[0])
+          lengthrangecpupinning = int(each_cpupinningranges[1])
+          while (indexrangecpupinning <= lengthrangecpupinning):
+            cpupinning.append(indexrangecpupinning)
+            indexrangecpupinning += 1
+      else:
+        cpupinning = vcpupin.attrib['cpuset'].split(",")
       for physicalcpupinning in cpupinning:
+        physicalcpupinning = int(physicalcpupinning)
         for numaindex in range(len(cputune)):
           if physicalcpupinning in cputune[numaindex][1]:
             if cpupinningusage.has_key(physicalcpupinning):
