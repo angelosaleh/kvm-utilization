@@ -200,14 +200,14 @@ for vmi in vms:
         for each_cpupinningranges in cpupinningranges:
           each_cpupinningranges = each_cpupinningranges.split("-")
           indexrangecpupinning = int(each_cpupinningranges[0])
-          lengthrangecpupinning = int(each_cpupinningranges[1])
+          lengthrangecpupinning = int(each_cpupinningranges[1]) if len(each_cpupinningranges) == 2 else indexrangecpupinning
           while (indexrangecpupinning <= lengthrangecpupinning):
             cpupinning.append(indexrangecpupinning)
             indexrangecpupinning += 1
       else:
         cpupinning = vcpupin.attrib['cpuset'].split(",")
       for physicalcpupinning in cpupinning:
-        physicalcpupinning = int(physicalcpupinning)
+        physicalcpupinning = str(physicalcpupinning)
         for numaindex in range(len(cputune)):
           if physicalcpupinning in cputune[numaindex][1]:
             if cpupinningusage.has_key(physicalcpupinning):
