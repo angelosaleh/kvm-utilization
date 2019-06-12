@@ -182,6 +182,7 @@ for vmi in vms:
     elif vdisk.attrib.has_key("dev"):
       disks += vdisk.attrib['dev'] + '<br>'
       sizeofimage = commands.getoutput("fdisk -l " + vdisk.attrib['dev'] + " | grep Disk | head -1 | awk '{ print $5 }' ")
+      sizeofimage = re.findall(r"\d+", sizeofimage)[0]
       sizeofimage = round(float(sizeofimage)/1000/1000/1000,1)
       totaldiskusage += sizeofimage
       diskssizes += str(sizeofimage) + 'G<br>'
